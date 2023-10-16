@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Toast from '../Toast';
 import Button from '../Button';
 
 import styles from './ToastPlayground.module.css';
@@ -9,12 +10,29 @@ const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 function ToastPlayground() {
   const [message, setMessage] = React.useState('');
   const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
+  const [showToast, setShowToast] = React.useState(false);
+
+  function handleShow() {
+    setShowToast(true);
+  }
+
+  function handleDismiss() {
+    setShowToast(false);
+  }
+
   return (
     <div className={styles.wrapper}>
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
+
+      {
+        showToast &&
+        <Toast handleDismiss={handleDismiss} variant={variant}>
+          {message}
+        </Toast>
+      }
 
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
@@ -69,7 +87,9 @@ function ToastPlayground() {
           <div
             className={`${styles.inputWrapper} ${styles.radioWrapper}`}
           >
-            <Button>Pop Toast!</Button>
+            <Button
+              onClick={handleShow} 
+            >Pop Toast!</Button>
           </div>
         </div>
       </div>
