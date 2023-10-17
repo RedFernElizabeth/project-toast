@@ -1,24 +1,19 @@
 import React from 'react';
 
+import useKeyDown from '../../hooks/use-keydown';
+
 export const ToastContext = React.createContext();
 
 function ToastProvider({children}) {
   const [toasts, setToasts] = React.useState([]);
 
   // Dismiss all toasts if 'ESC' is pressed
-  React.useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.code === 'Escape') {
-        setToasts([]);
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    }
+  // Use memoization to prevent the callback from being regenerated on every render 
+  const handleEscape = React.useCallback(() => {
+    setToasts([]);
   }, [])
+
+  useKeyDown('Escape', handleEscape);
 
   function createToast(message, variant) {
     // Create new toast object
