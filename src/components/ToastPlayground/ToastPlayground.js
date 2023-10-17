@@ -1,45 +1,28 @@
 import React from 'react';
 
 import ToastShelf from '../ToastShelf';
-import Toast from '../Toast';
 import Button from '../Button';
+
+import {ToastContext} from '../ToastProvider';
 
 import styles from './ToastPlayground.module.css';
 
 const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 
 function ToastPlayground() {
+  const {createToast} = React.useContext(ToastContext);
+
   const [message, setMessage] = React.useState('');
   const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
-  const [toasts, setToasts] = React.useState([]);
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    // Create new toast object
-    const newToast = {
-      id: crypto.randomUUID(),
-      message,
-      variant
-    };
-
-    // Clone the existing array, then add the new toast object
-    const nextToasts = [...toasts, newToast];
-
-    setToasts(nextToasts);
+    createToast(message, variant);
 
     // Revert message and variant back to default
     setMessage('');
     setVariant(VARIANT_OPTIONS[0]);
-  }
-
-  function handleDismiss(id) {
-    // Create a new array that includes all of the toasts except the one we want to remove
-    const nextToasts = toasts.filter((toast) => {
-      return toast.id !== id;
-    });
-
-    setToasts(nextToasts);
   }
 
   return (
@@ -49,7 +32,7 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      <ToastShelf toasts={toasts} handleDismiss={handleDismiss} />
+      <ToastShelf />
 
       <form 
         className={styles.controlsWrapper}
